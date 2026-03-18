@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拼多多报名原价计算器 · 简洁版</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background: #f1f5f9;
+            margin: 0;
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+        .card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px -12px rgba(0,20,50,0.2);
+            padding: 30px 35px;
+            border: 1px solid #e9edf4;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0c203b;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .tag {
+            background: #1e3a8a;
+            color: white;
+            font-size: 0.85rem;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+        .rule-box {
+            background: #e6f0ff;
+            border-radius: 20px;
+            padding: 16px 24px;
+            margin: 20px 0 28px 0;
+            color: #10345e;
+            border-left: 6px solid #2563eb;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .coupon-panel {
+            background: #f0f9ff;
+            border-radius: 20px;
+            padding: 18px 24px;
+            margin-bottom: 25px;
+            border: 1px solid #b8d6f5;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .coupon-panel label {
+            font-weight: 600;
+            color: #1e3a5f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .coupon-panel input {
+            padding: 12px 18px;
+            border: 1px solid #b0c9e5;
+            border-radius: 40px;
+            width: 150px;
+            font-size: 1rem;
+        }
+        .sku-panel {
+            background: #fafcff;
+            border-radius: 24px;
+            padding: 22px 24px;
+            border: 1px solid #dee8f2;
+            margin-bottom: 30px;
+        }
+        .sku-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .sku-header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #0b2a4a;
+            margin: 0;
+        }
+        .btn-add {
+            background: #ffffff;
+            border: 2px solid #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-add:hover {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary {
+            background: #2563eb;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover {
+            background: #1a45af;
+        }
+        .sku-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .sku-table th {
+            background: #f0f6ff;
+            color: #1f3a6b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #dbe5f0;
+        }
+        .sku-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #ecf3fa;
+            background: white;
+        }
+        .sku-table td:last-child {
+            text-align: center;
+        }
+        .sku-table input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            font-size: 1rem;
+            background: #ffffff;
+        }
+        .sku-table input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0 6px;
+            transition: 0.2s;
+        }
+        .remove-btn:hover {
+            color: #dc2626;
+        }
+        .result-area {
+            background: #f6faff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid #cddff2;
+            margin-top: 20px;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .result-table th {
+            background: #eaf1fd;
+            color: #1f3a6b;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .result-table td {
+            padding: 12px;
+            border-bottom: 1px solid #d5e2f0;
+        }
+        .result-table td:first-child {
+            font-weight: 500;
+        }
+        .check-mark {
+            color: #22c55e;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .footnote {
+            color: #4b6589;
+            font-size: 0.9rem;
+            margin-top: 25px;
+            border-top: 1px dashed #b5ccdf;
+            padding-top: 20px;
+        }
+        .flex-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .example-btn {
+            background: white;
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .example-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>
+            📋 报名原价计算器
+            <span class="tag">每200-30 / 每100-15 / 每10-1</span>
+        </h1>
+        <div class="rule-box">
+            <strong>📌 规则</strong>：同时报名三个活动，系统自动取最大优惠生效。满减优惠按15%计算并向下取整到分，与优惠券比较。工具根据您输入的期望实收反推报名原价。
+        </div>
+
+        <!-- 优惠券设置 -->
+        <div class="coupon-panel">
+            <label>
+                <input type="checkbox" id="couponEnable" checked> 启用优惠券
+            </label>
+            <label>
+                优惠券金额 (元):
+                <input type="number" id="couponAmount" min="0" step="0.01" value="3.00">
+            </label>
+        </div>
+
+        <!-- SKU期望实收输入 -->
+        <div class="sku-panel">
+            <div class="sku-header">
+                <h3>📦 SKU期望实收</h3>
+                <div class="flex-row">
+                    <button class="example-btn" id="loadExample1">📋 六味地黄丸示例</button>
+                    <button class="example-btn" id="loadExample2">📋 清凉油示例</button>
+                    <button class="btn-add" id="addSkuBtn">+ 添加SKU</button>
+                    <button class="btn-primary" id="calcBtn">✨ 计算报名原价</button>
+                </div>
+            </div>
+            <table class="sku-table" id="skuTable">
+                <thead>
+                    <tr><th>SKU名称</th><th>期望实收 (元)</th><th style="text-align:center;">操作</th></tr>
+                </thead>
+                <tbody id="skuBody">
+                    <!-- JS动态生成 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 计算结果（简洁三列） -->
+        <div class="result-area" id="resultArea" style="display: none;">
+            <h3 style="margin-top: 0;">📐 推荐报名原价</h3>
+            <table class="result-table" id="resultTable">
+                <thead>
+                    <tr><th>SKU</th><th>期望实收</th><th>报名原价</th></tr>
+                </thead>
+                <tbody id="resultBody">
+                </tbody>
+            </table>
+            <p id="calcNote" style="margin-top: 20px; color: #2563eb; text-align: center;"></p>
+        </div>
+
+        <div class="footnote">
+            * 满减优惠 = floor(原价×0.15×100)/100，优惠券直接减。系统自动取最大优惠生效。<br>
+            * 报名原价精确到分，并保证最终实收与期望一致（误差≤0.01元）。
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 默认SKU（六味地黄丸示例）
+        let skus = [
+            { name: '1盒体验装', target: 8.67 },
+            { name: '1瓶装', target: 9.52 },
+            { name: '2瓶装', target: 14.62 },
+            { name: '3瓶装', target: 19.72 },
+            { name: '6瓶装', target: 33.07 },
+            { name: '5瓶装', target: 33.07 }
+        ];
+
+        // DOM
+        const skuBody = document.getElementById('skuBody');
+        const resultArea = document.getElementById('resultArea');
+        const resultBody = document.getElementById('resultBody');
+        const calcNote = document.getElementById('calcNote');
+        const couponEnable = document.getElementById('couponEnable');
+        const couponAmount = document.getElementById('couponAmount');
+
+        // 渲染SKU表格
+        function renderSkuTable() {
+            let html = '';
+            skus.forEach((sku, index) => {
+                html += `<tr>
+                    <td><input type="text" value="${sku.name}" placeholder="SKU名称" data-index="${index}" class="sku-name" style="width:200px;"></td>
+                    <td><input type="number" value="${sku.target.toFixed(2)}" min="0" step="0.01" data-index="${index}" class="sku-target" style="width:130px;"></td>
+                    <td><button class="remove-btn" data-index="${index}" ${skus.length === 1 ? 'disabled style="opacity:0.3;"' : ''}>&#x2715;</button></td>
+                </tr>`;
+            });
+            skuBody.innerHTML = html;
+
+            // 绑定事件
+            document.querySelectorAll('.sku-name').forEach(inp => {
+                inp.addEventListener('input', function(e) {
+                    const idx = parseInt(this.dataset.index);
+                    skus[idx].name = this.value;
+                });
+            });
+            document.querySelectorAll('.sku-target').forEach(inp => {
+                inp.addEventListener('input', function(e) {
+                    const idx = parseInt(this.dataset.index);
+                    let val = parseFloat(this.value);
+                    if (isNaN(val) || val < 0) val = 0;
+                    skus[idx].target = val;
+                });
+            });
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    if (skus.length <= 1) return;
+                    const idx = parseInt(this.dataset.index);
+                    skus.splice(idx, 1);
+                    renderSkuTable();
+                });
+            });
+        }
+
+        // 添加SKU
+        document.getElementById('addSkuBtn').addEventListener('click', function() {
+            skus.push({ name: `SKU${skus.length+1}`, target: 0 });
+            renderSkuTable();
+        });
+
+        // 示例1：六味地黄丸
+        document.getElementById('loadExample1').addEventListener('click', function() {
+            skus = [
+                { name: '体验装10', target: 8.67 },
+                { name: '1瓶装', target: 9.52 },
+                { name: '2瓶装', target: 14.62 },
+                { name: '3瓶装', target: 19.72 },
+                { name: '6瓶装', target: 33.07 },
+                { name: '5瓶装', target: 33.07 }
+            ];
+            renderSkuTable();
+        });
+
+        // 示例2：清凉油
+        document.getElementById('loadExample2').addEventListener('click', function() {
+            skus = [
+                { name: '1盒体验装', target: 6.21 },
+                { name: '2盒优惠装', target: 7.91 },
+                { name: '3盒超实惠', target: 9.61 },
+                { name: '5盒批发价', target: 13.01 },
+                { name: '8盒批发价', target: 18.11 }
+            ];
+            renderSkuTable();
+        });
+
+        // 计算满减优惠（向下取整到分）
+        function fullReduction(price) {
+            return Math.floor(price * 0.15 * 100) / 100;
+        }
+
+        // 求解单个SKU的报名原价
+        function solvePrice(target, couponEnabled, couponValue) {
+            // 先尝试优惠券生效的情况
+            if (couponEnabled) {
+                const P_coupon = target + couponValue;
+                const disc_coupon = couponValue;
+                const disc_full = fullReduction(P_coupon);
+                if (disc_coupon >= disc_full) {
+                    const paid = P_coupon - disc_coupon;
+                    if (Math.abs(paid - target) < 0.001) {
+                        return { P: P_coupon, active: 'coupon' };
+                    }
+                }
+            }
+
+            // 否则满减生效，搜索原价
+            for (let P = target; P <= target + 100; P += 0.01) {
+                P = Math.round(P * 100) / 100;
+                const disc = fullReduction(P);
+                const paid = P - disc;
+                if (Math.abs(paid - target) < 0.001) {
+                    if (couponEnabled) {
+                        if (couponValue > disc) continue; // 优惠券更大，这个P不成立
+                    }
+                    return { P, active: 'full' };
+                }
+            }
+            return null;
+        }
+
+        // 计算所有SKU
+        function calculate() {
+            const useCoupon = couponEnable.checked;
+            const couponVal = useCoupon ? (parseFloat(couponAmount.value) || 0) : 0;
+
+            let rows = '';
+            let allMatch = true;
+
+            skus.forEach(sku => {
+                const target = sku.target;
+                const result = solvePrice(target, useCoupon, couponVal);
+                if (!result) {
+                    rows += `<tr><td colspan="3" style="color:red;">无法求解，请调整目标</td></tr>`;
+                    allMatch = false;
+                    return;
+                }
+                const P = result.P;
+                // 验证最终实收
+                const discFull = fullReduction(P);
+                const discCoupon = useCoupon ? couponVal : 0;
+                const maxDisc = Math.max(discFull, discCoupon);
+                const finalPaid = P - maxDisc;
+                const match = Math.abs(finalPaid - target) < 0.01;
+                if (!match) allMatch = false;
+
+                rows += `<tr>
+                    <td>${sku.name}</td>
+                    <td>${target.toFixed(2)}</td>
+                    <td>${P.toFixed(2)} ${match ? '<span class="check-mark">✓</span>' : ''}</td>
+                </tr>`;
+            });
+
+            resultBody.innerHTML = rows;
+            resultArea.style.display = 'block';
+            calcNote.innerText = allMatch ? '✅ 所有SKU精确匹配' : '⚠️ 部分SKU未精确匹配，请检查期望值或优惠券';
+        }
+
+        document.getElementById('calcBtn').addEventListener('click', calculate);
+
+        // 初始渲染
+        renderSkuTable();
+    })();
+</script>
+</body>
+</html>
